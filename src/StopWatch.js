@@ -1,6 +1,7 @@
 var StopWatch = function () {
   this.isActive = false;
   this.timeSaved = 0;
+  this._lapsArray = [];
 };
 
 StopWatch.prototype.getCurrentTime = function() {
@@ -10,6 +11,7 @@ StopWatch.prototype.getCurrentTime = function() {
 StopWatch.prototype.start = function () {
   this._startTime = this.getCurrentTime();
   this.isActive = true;
+  this._lapsArray.push([]);
 };
 
 StopWatch.prototype.stop = function () {
@@ -62,4 +64,20 @@ StopWatch.prototype.convertTimeToArray = function (milliseconds) {
   var secs = this.getTimeInSeconds(mins[1]);
   var hundredths = this.getTimeInHundreths(secs[1]);
   return [mins[0], secs[0], hundredths];
+};
+
+StopWatch.prototype.recordLap = function () {
+  if (!this.isActive) {
+    return;
+  }
+  var lastSetOfLaps = this._lapsArray[this._lapsArray.length - 1];
+
+  if (lastSetOfLaps.length === 0) {
+    lastSetOfLaps.push(this._startTime);
+  }
+  lastSetOfLaps.push(this.getCurrentTime());
+};
+
+StopWatch.prototype.getLaps = function () {
+  return [this._lapsArray[0][1] - this._lapsArray[0][0]];
 };

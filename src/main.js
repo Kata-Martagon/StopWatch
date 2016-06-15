@@ -24,3 +24,7 @@ function resetButton() {
   clearInterval(intervalRef);
   updateTime();
 }
+
+// function lapButton () {
+//   var lapTimes = [];
+// }

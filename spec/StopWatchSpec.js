@@ -153,5 +153,66 @@ describe('StopWatch', function () {
     });
   });
 
+  describe('::recordLap', function () {
+    it('should be empty when StopWatch is inactive', function () {
+      stopWatch.recordLap();
+      expect(stopWatch._lapsArray).toEqual([]);
+    });
 
+    it('should add the startTime and the current time to laps array when stopWatch is active', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      expect(stopWatch._lapsArray).toEqual([[baseTime, baseTime + 500]]);
+    });
+
+    it('should have startTime and lapTimes for multiple laps', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(300);
+      stopWatch.recordLap();
+      jasmine.clock().tick(600);
+      stopWatch.recordLap();
+      expect(stopWatch._lapsArray).toEqual([[baseTime, baseTime + 500, baseTime + 500 + 300, baseTime + 500 + 300 + 600]]);
+    });
+
+    it('should have startTime and lapTimes for multiple laps and start stops', function () {
+      stopWatch.start();
+
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+
+      jasmine.clock().tick(300);
+      stopWatch.stop();
+
+      jasmine.clock().tick(500);
+      stopWatch.start();
+
+      jasmine.clock().tick(100);
+      stopWatch.recordLap();
+
+      jasmine.clock().tick(600);
+      stopWatch.recordLap();
+
+      var firstStart = baseTime;
+      var firstLap = firstStart + 500;
+      var secondStart = baseTime + 500 + 300 + 500;
+      var secondLap = secondStart + 100;
+      var thirdLap = secondLap + 600;
+
+      expect(stopWatch._lapsArray).toEqual([[firstStart, firstLap], [secondStart, secondLap, thirdLap]]);
+    });
+  });
+
+  describe('::getLaps', function () {
+    it('should have an array of lap times in milliseconds', function () {
+      stopWatch.start();
+
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+
+      expect(stopWatch.getLaps()).toEqual([500]);
+    });
+  });
 });
