@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 describe('StopWatch', function () {
 
@@ -16,6 +16,10 @@ describe('StopWatch', function () {
     jasmine.clock().uninstall();
   });
 
+  it('should have a default state of stopped', function () {
+    expect(stopWatch.isActive).toBe(false);
+  });
+
   describe('::getCurrentTime()', function () {
     it('should return the current time as a timestamp', function() {
       expect(stopWatch.getCurrentTime()).toEqual(Date.now());
@@ -27,6 +31,11 @@ describe('StopWatch', function () {
       stopWatch.start();
       expect(Date.now()).toEqual(stopWatch._startTime);
     });
+
+    it('should change isActive status to true', function () {
+      stopWatch.start();
+      expect(stopWatch.isActive).toBe(true);
+    });
   });
 
   describe('::stop()', function () {
@@ -34,23 +43,36 @@ describe('StopWatch', function () {
       stopWatch.stop();
       expect(Date.now()).toEqual(stopWatch._stopTime);
     });
-  });
 
-  describe('::_timeElapsed()', function () {
-    it('should record the _timeElapsed on the stopWatch object', function () {
+    it('should change isActive status to false', function () {
       stopWatch.start();
-      jasmine.clock().tick(50);
+      expect(stopWatch.isActive).toBe(true);
       stopWatch.stop();
-      expect(stopWatch._timeElapsed()).toEqual(50);
+      expect(stopWatch.isActive).toBe(false);
     });
   });
 
-  xdescribe('::getTimeElapsed()', function () {
+  describe('::_timeElapsedfromStart()', function () {
+    it('should record the _timeElapsedfromStart on the stopWatch object', function () {
+      stopWatch.start();
+      jasmine.clock().tick(50);
+      stopWatch.stop();
+      expect(stopWatch._timeElapsedfromStart(Date.now())).toEqual(50);
+    });
+  });
+
+  describe('::getTimeElapsed()', function () {
     it('should return time elapsed in mins,secs,hundreths', function () {
       stopWatch.start();
       jasmine.clock().tick(6500);
       stopWatch.stop();
-      expect(stopWatch.getTimeElapsed()).toEqual([6.5]);
+      expect(stopWatch.getTimeElapsed()).toEqual([0, 6, 50]);
+    });
+
+    it('should return time elapsed in mins,secs,hundreths', function () {
+      stopWatch.start();
+      jasmine.clock().tick(6500);
+      expect(stopWatch.getTimeElapsed()).toEqual([0, 6, 50]);
     });
   });
 

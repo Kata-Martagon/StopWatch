@@ -1,7 +1,7 @@
 'use strict';
 
 var StopWatch = function () {
-
+  this.isActive = false;
 };
 
 StopWatch.prototype.getCurrentTime = function() {
@@ -10,22 +10,23 @@ StopWatch.prototype.getCurrentTime = function() {
 
 StopWatch.prototype.start = function () {
   this._startTime = this.getCurrentTime();
+  this.isActive = true;
 };
 
 StopWatch.prototype.stop = function () {
   this._stopTime = this.getCurrentTime();
+  this.isActive = false;
 };
 
-StopWatch.prototype._timeElapsed = function () {
-  return this._stopTime - this._startTime;
+StopWatch.prototype._timeElapsedfromStart = function (endTime) {
+  return endTime - this._startTime;
 };
+
 
 StopWatch.prototype.getTimeElapsed = function () {
-  var timeInMillisecond = this._timeElapsed();
-  var arrayOfTimeElasped = [];
-  var timeInSeconds = timeInMillisecond / 1000;
-  arrayOfTimeElasped.push(timeInSeconds);
-  return arrayOfTimeElasped;
+  var endTime = this.isActive ? Date.now() : this._stopTime;
+  var timeInMillisecond = this._timeElapsedfromStart(endTime);
+  return this.convertTimeToArray(timeInMillisecond);
 };
 
 StopWatch.prototype.getTimeInHundreths = function (milliseconds) {
