@@ -24,6 +24,9 @@ StopWatch.prototype._timeElapsedfromStart = function (endTime) {
 
 
 StopWatch.prototype.getTimeElapsed = function () {
+  if (!this._startTime) {
+    return [0, 0, 0];
+  }
   var endTime = this.isActive ? Date.now() : this._stopTime;
   var timeInMillisecond = this._timeElapsedfromStart(endTime);
   return this.convertTimeToArray(timeInMillisecond);

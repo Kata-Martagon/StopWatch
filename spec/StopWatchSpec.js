@@ -74,6 +74,10 @@ describe('StopWatch', function () {
       jasmine.clock().tick(6500);
       expect(stopWatch.getTimeElapsed()).toEqual([0, 6, 50]);
     });
+
+    it('should return [0,0,0] when timer not started', function () {
+      expect(stopWatch.getTimeElapsed()).toEqual([0,0,0]);
+    });
   });
 
   describe('::getTimeInHundreths()', function () {
