@@ -17,3 +17,11 @@ StopWatch.prototype.stop = function () {
 StopWatch.prototype._timeElapsed = function () {
   return this._stopTime - this._startTime;
 };
+
+StopWatch.prototype.getTimeElapsed = function () {
+  var timeInMillisecond = this._timeElapsed();
+  var arrayOfTimeElasped = [];
+  var timeInSeconds = timeInMillisecond / 1000;
+  arrayOfTimeElasped.push(timeInSeconds);
+  return arrayOfTimeElasped;
+};

@@ -82,12 +82,12 @@ describe('StopWatch', function () {
     expect(stopWatch._timeElapsed()).toEqual(50);
   });
 
-  describe('stopWatch.getTimeElapsed()', function () {
+  describe('::getTimeElapsed()', function () {
     it('should return time elapsed in mins,secs,hundreths', function (done) {
       stopWatch.start();
-      jasmine.clock().tick(50);
+      jasmine.clock().tick(6500);
       stopWatch.stop();
-      expect(stopWatch.getTimeElapsed()).toEqual(50);
+      expect(stopWatch.getTimeElapsed()).toEqual([6.5]);
     });
   });
 });
