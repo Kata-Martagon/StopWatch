@@ -33,13 +33,17 @@ describe("Test environment works", function() {
 describe('StopWatch', function () {
 
   var stopWatch;
+  var baseTime;
 
   beforeEach(function() {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
+    jasmine.clock().install();
+    baseTime = Date.now();
+    jasmine.clock().mockDate(baseTime);
     stopWatch = new StopWatch();
   });
 
   afterEach(function () {
+    jasmine.clock().uninstall();
   });
 
   it('should return the current time as a timestamp', function() {
@@ -56,33 +60,34 @@ describe('StopWatch', function () {
     expect(Date.now()).toEqual(stopWatch._stopTime);
   });
 
-  it('should record the _timeElapsed on the stopWatch object', function (done) {
-    var startTime = Date.now();
+  // Testing without jasmine.clock().mockDate()
+  // it('should record the _timeElapsed on the stopWatch object', function (done) {
+  //   var startTime = Date.now();
+  //   stopWatch.start();
+  //
+  //   setTimeout(function() {
+  //     stopWatch.stop();
+  //     var stopTime = Date.now();
+  //     var expected = stopTime - startTime;
+  //
+  //     expect(stopWatch._timeElapsed()).toEqual(expected);
+  //     done();
+  //   }, 10);
+  // });
+
+  it('should record the _timeElapsed on the stopWatch object', function () {
     stopWatch.start();
-
-    setTimeout(function() {
-      stopWatch.stop();
-      var stopTime = Date.now();
-      var expected = stopTime - startTime;
-
-      expect(stopWatch._timeElapsed()).toEqual(expected);
-      done();
-    }, 10);
+    jasmine.clock().tick(50);
+    stopWatch.stop();
+    expect(stopWatch._timeElapsed()).toEqual(50);
   });
 
   describe('stopWatch.getTimeElapsed()', function () {
     it('should return time elapsed in mins,secs,hundreths', function (done) {
-      var startTime = Date.now();
       stopWatch.start();
-
-      setTimeout(function() {
-        stopWatch.stop();
-        var stopTime = Date.now();
-        var expected = stopTime - startTime;
-
-        expect(stopWatch._timeElapsed()).toEqual(expected);
-        done();
-      }, 130);
+      jasmine.clock().tick(50);
+      stopWatch.stop();
+      expect(stopWatch.getTimeElapsed()).toEqual(50);
     });
   });
 });
