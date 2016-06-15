@@ -78,6 +78,30 @@ describe('StopWatch', function () {
     it('should return [0,0,0] when timer not started', function () {
       expect(stopWatch.getTimeElapsed()).toEqual([0,0,0]);
     });
+    it('should return correct time after multiple start stops', function () {
+      stopWatch.start();
+      jasmine.clock().tick(6500);
+      stopWatch.stop();
+      jasmine.clock().tick(300);
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.stop();
+      expect(stopWatch.getTimeElapsed()).toEqual([0, 7, 0]);
+    });
+    it('should return correct time after multiple start stops', function () {
+      stopWatch.start();
+      jasmine.clock().tick(6500);
+      stopWatch.stop();
+      jasmine.clock().tick(300);
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.stop();
+      jasmine.clock().tick(2000);
+      stopWatch.start();
+      jasmine.clock().tick(60000);
+      stopWatch.stop();
+      expect(stopWatch.getTimeElapsed()).toEqual([1, 7, 0]);
+    });
   });
 
   describe('::getTimeInHundreths()', function () {
@@ -128,5 +152,6 @@ describe('StopWatch', function () {
       expect(stopWatch.convertTimeToArray(mins + secs + milliseconds)).toEqual([20, 15, 44]);
     });
   });
+
 
 });

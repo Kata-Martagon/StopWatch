@@ -1,7 +1,6 @@
-'use strict';
-
 var StopWatch = function () {
   this.isActive = false;
+  this.timeSaved = 0;
 };
 
 StopWatch.prototype.getCurrentTime = function() {
@@ -16,6 +15,7 @@ StopWatch.prototype.start = function () {
 StopWatch.prototype.stop = function () {
   this._stopTime = this.getCurrentTime();
   this.isActive = false;
+  this.timeSaved += this._timeElapsedfromStart(this._stopTime);
 };
 
 StopWatch.prototype._timeElapsedfromStart = function (endTime) {
@@ -25,19 +25,22 @@ StopWatch.prototype._timeElapsedfromStart = function (endTime) {
 
 StopWatch.prototype.getTimeElapsed = function () {
   if (!this._startTime) {
+    // Timer not started, so return timer of zero
     return [0, 0, 0];
   }
-  var endTime = this.isActive ? Date.now() : this._stopTime;
-  var timeInMillisecond = this._timeElapsedfromStart(endTime);
+  if (!this.isActive) {
+    // Timer not active, so return timeSaved
+    return this.convertTimeToArray(this.timeSaved);
+  }
+
+  // Active timer, so calc time elaspsed from last start time to now plus saved time
+  var timeInMillisecond = this._timeElapsedfromStart(this.getCurrentTime()) + this.timeSaved;
+
   return this.convertTimeToArray(timeInMillisecond);
 };
 
 StopWatch.prototype.getTimeInHundreths = function (milliseconds) {
   return Math.round(milliseconds / 10);
-};
-
-StopWatch.prototype.getTimeInSeconds = function (milliseconds) {
-  return Math.floor(milliseconds / 1000);
 };
 
 StopWatch.prototype.getTimeInMinutes = function (milliseconds) {

@@ -18,3 +18,9 @@ function stopButton() {
   stopWatch.stop();
   clearInterval(intervalRef);
 }
+
+function resetButton() {
+  stopWatch = new StopWatch();
+  clearInterval(intervalRef);
+  updateTime();
+}
