@@ -4,12 +4,14 @@ describe('StopWatch', function () {
 
   var stopWatch;
   var baseTime;
+  var TimeConverter;
 
   beforeEach(function() {
     jasmine.clock().install();
     baseTime = Date.now();
     jasmine.clock().mockDate(baseTime);
-    stopWatch = new StopWatch();
+    TimeConverter = jasmine.createSpy("TimeConverter");
+    stopWatch = new StopWatch(TimeConverter);
   });
 
   afterEach(function () {
@@ -134,24 +136,24 @@ describe('StopWatch', function () {
     });
   });
 
-  describe('::convertTimeToArray', function () {
-    it('should return time in array [mins, secs, hundredths]', function () {
-      expect(stopWatch.convertTimeToArray(60000)).toEqual([1, 0, 0]);
-    });
-
-    it('should return time in array [mins, secs, hundredths]', function () {
-      var mins = 2 * 60 * 1000;
-      var secs = 30 * 1000;
-      expect(stopWatch.convertTimeToArray(mins + secs)).toEqual([2, 30, 0]);
-    });
-
-    it('should return time in array [mins, secs, hundredths]', function () {
-      var mins = 20 * 60 * 1000;
-      var secs = 15 * 1000;
-      var milliseconds = 444;
-      expect(stopWatch.convertTimeToArray(mins + secs + milliseconds)).toEqual([20, 15, 44]);
-    });
-  });
+  // describe('::convertTimeToArray', function () {
+  //   it('should return time in array [mins, secs, hundredths]', function () {
+  //     expect(stopWatch.convertTimeToArray(60000)).toEqual([1, 0, 0]);
+  //   });
+  //
+  //   it('should return time in array [mins, secs, hundredths]', function () {
+  //     var mins = 2 * 60 * 1000;
+  //     var secs = 30 * 1000;
+  //     expect(stopWatch.convertTimeToArray(mins + secs)).toEqual([2, 30, 0]);
+  //   });
+  //
+  //   it('should return time in array [mins, secs, hundredths]', function () {
+  //     var mins = 20 * 60 * 1000;
+  //     var secs = 15 * 1000;
+  //     var milliseconds = 444;
+  //     expect(stopWatch.convertTimeToArray(mins + secs + milliseconds)).toEqual([20, 15, 44]);
+  //   });
+  // });
 
   describe('::recordLap', function () {
     it('should be empty when StopWatch is inactive', function () {
