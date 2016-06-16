@@ -138,6 +138,7 @@ body {
   background-color: #CCC;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 #StartButton {
