@@ -12,23 +12,36 @@
       <div class="stopWatch">
 
         <div class="timers">
-          <div class="timerGroup borderRed">
-            <div class="smallTimer">00:24.56</div>
-            <div class="bigTimer">03:18.92</div>
+          <div class="timerGroup">
+            <div class="smallTimer"></div>
+            <div id="Timer" class="bigTimer"></div>
           </div>
         </div>
 
         <div class="controls">
-          <div class="buttonGroup">
-            <button class="stopWatchButton">Reset</button>
-            <button class="stopWatchButton">Start</button>
+          <div class="buttons">
+            <div class="buttonGroup">
+              <button id="ResetButton" class="stopWatchButton" onclick="reset()">Reset</button>
+              <button id="LapButton" class="stopWatchButton" onclick="lap()">Lap</button>
+            </div>
+            <div class="buttonGroup">
+              <button id="StartButton" class="stopWatchButton" onclick="start()">Start</button>
+              <button id="StopButton" class="stopWatchButton" onclick="stop()">Stop</button>
+            </div>
           </div>
         </div>
 
         <div class="laps">
-          laps go here....
+          <ol id="LapTimes">
+          </ol>
         </div>
       </div>
     </div>
+
+
+    <script src="src/TimeConverter.js"></script>
+    <script src="src/StopWatch.js"></script>
+    <script src="src/Animator.js"></script>
+    <script src="src/app.js"></script>
   </body>
 </html>
