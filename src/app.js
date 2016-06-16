@@ -1,3 +1,4 @@
+var lastList = [];
 
 function updateTime() {
   document.getElementById('Timer').textContent = formatTime(stopWatch.getTimeElapsed());
@@ -38,6 +39,7 @@ function reset () {
   Animator.stop();
   updateTime();
   clearLapList();
+  lastList = [];
 }
 
 function lap() {
@@ -60,8 +62,9 @@ function formatTime (timeArr) {
 function updateLapList (list) {
   var listNode = document.getElementById('LapTimes');
 
-  if (list.length === 0 || list.length <= listNode.childNodes.length - 1) return;
+  if (list.length === 0 || list.length <= lastList.length ) return;
 
+  lastList = list;
   clearLapList();
   buildLapList(list);
 }
@@ -77,9 +80,18 @@ function clearLapList () {
 function buildLapList (list) {
   var listNode = document.getElementById('LapTimes');
 
-  list.reverse().forEach(function (timeArr) {
-    var lapNode = document.createElement("li");
-    lapNode.textContent = formatTime(timeArr);
-    listNode.appendChild(lapNode);
+  list.reverse().forEach(function (timeArr, idx, arr) {
+    creatTableRow(timeArr, idx, arr);
   });
+}
+
+function creatTableRow (timeArr, idx, arr) {
+  var trNode = document.createElement('tr');
+  var tdDescription = document.createElement('td');
+  tdDescription.textContent = 'Lap ' + (arr.length - idx);
+  var tdTime = document.createElement('td');
+  tdTime.textContent = formatTime(timeArr);
+  trNode.appendChild(tdDescription);
+  trNode.appendChild(tdTime);
+  document.getElementById('LapTimes').appendChild(trNode);
 }
