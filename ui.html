@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Stop Watch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/styles.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
 
@@ -24,7 +24,7 @@
               <button id="ResetButton" class="stopWatchButton" onclick="reset()">Reset</button>
               <button id="LapButton" class="stopWatchButton" onclick="lap()">Lap</button>
             </div>
-            <div class="buttonGroup">
+            <div class="buttonGroup" style="margin-left: 0;">
               <button id="StartButton" class="stopWatchButton" onclick="start()">Start</button>
               <button id="StopButton" class="stopWatchButton" onclick="stop()">Stop</button>
             </div>
@@ -32,9 +32,10 @@
         </div>
 
         <div class="laps">
-          <ol id="LapTimes">
-          </ol>
+          <table id="LapTimes" class="lapTable">
+          </table>
         </div>
+
       </div>
     </div>
 

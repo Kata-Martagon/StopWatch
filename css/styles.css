@@ -138,6 +138,7 @@ body {
   background-color: #CCC;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 #StartButton {
@@ -156,6 +157,24 @@ body {
   display: none;
 }
 
+#LapTimes {
+  list-style-type: none;
+}
+
+.lapTable {
+  width: 80%;
+}
+
+tr td {
+  margin: 0;
+  font-size: 0.8em;
+  border-bottom: 1px solid #666;
+}
+
+td:last-child {
+  text-align: right;
+}
+
 /* Large height screens */
 @media (min-height: 700px) {
 
@@ -167,7 +186,7 @@ body {
 
 @media (min-width: 800px) {
 
-  .stopWatchButton {
+  .buttonGroup {
     margin-right: 40px;
   }
 }
