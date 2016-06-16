@@ -4,12 +4,14 @@ describe('StopWatch', function () {
 
   var stopWatch;
   var baseTime;
+  var TimeConverter;
 
   beforeEach(function() {
     jasmine.clock().install();
     baseTime = Date.now();
     jasmine.clock().mockDate(baseTime);
-    stopWatch = new StopWatch();
+    TimeConverter = jasmine.createSpy("TimeConverter");
+    stopWatch = new StopWatch(TimeConverter);
   });
 
   afterEach(function () {
@@ -36,12 +38,19 @@ describe('StopWatch', function () {
       stopWatch.start();
       expect(stopWatch.isActive).toBe(true);
     });
+
+    it('should throw an error if isActive status is true', function () {
+      stopWatch.start();
+      var fn = function () { stopWatch.start(); };
+      expect(fn).toThrowError();
+    });
   });
 
   describe('::stop()', function () {
     it('should record the _stopTime on the stopWatch object', function () {
-      stopWatch.stop();
-      expect(Date.now()).toEqual(stopWatch._stopTime);
+      stopWatch.start();
+      var stopTime = stopWatch.stop();
+      expect(Date.now()).toEqual(stopTime);
     });
 
     it('should change isActive status to false', function () {
@@ -49,6 +58,11 @@ describe('StopWatch', function () {
       expect(stopWatch.isActive).toBe(true);
       stopWatch.stop();
       expect(stopWatch.isActive).toBe(false);
+    });
+
+    it('should throw an error if isActive status is false', function () {
+      var fn = function () { stopWatch.stop(); };
+      expect(fn).toThrowError();
     });
   });
 
@@ -104,55 +118,6 @@ describe('StopWatch', function () {
     });
   });
 
-  describe('::getTimeInHundreths()', function () {
-    it('should return time elapsed hundreths of a second', function () {
-      expect(stopWatch.getTimeInHundreths(6500)).toEqual(650);
-    });
-
-    it('should return time rounded to nearest whole hundredth of a second', function () {
-      expect(stopWatch.getTimeInHundreths(6505)).toEqual(651);
-    });
-  });
-
-  describe('::getTimeInSeconds()', function () {
-    it('should return time elapsed in completed seconds', function () {
-      expect(stopWatch.getTimeInSeconds(6500)).toEqual([6, 500]);
-    });
-
-    it('should return time elapsed in seconds and remainder milliseconds', function () {
-      expect(stopWatch.getTimeInSeconds(500)).toEqual([0, 500]);
-    });
-  });
-
-  describe('::getTimeInMinutes()', function () {
-    it('should return time elapsed in completed minutes', function () {
-      expect(stopWatch.getTimeInMinutes(60000)).toEqual([1, 0]);
-    });
-
-    it('should return remainders', function () {
-      expect(stopWatch.getTimeInMinutes(56000)).toEqual([0,56000]);
-    });
-  });
-
-  describe('::convertTimeToArray', function () {
-    it('should return time in array [mins, secs, hundredths]', function () {
-      expect(stopWatch.convertTimeToArray(60000)).toEqual([1, 0, 0]);
-    });
-
-    it('should return time in array [mins, secs, hundredths]', function () {
-      var mins = 2 * 60 * 1000;
-      var secs = 30 * 1000;
-      expect(stopWatch.convertTimeToArray(mins + secs)).toEqual([2, 30, 0]);
-    });
-
-    it('should return time in array [mins, secs, hundredths]', function () {
-      var mins = 20 * 60 * 1000;
-      var secs = 15 * 1000;
-      var milliseconds = 444;
-      expect(stopWatch.convertTimeToArray(mins + secs + milliseconds)).toEqual([20, 15, 44]);
-    });
-  });
-
   describe('::recordLap', function () {
     it('should be empty when StopWatch is inactive', function () {
       stopWatch.recordLap();
@@ -205,14 +170,59 @@ describe('StopWatch', function () {
     });
   });
 
-  describe('::getLaps', function () {
+  describe('::_getLapIntervals', function () {
     it('should have an array of lap times in milliseconds', function () {
       stopWatch.start();
 
       jasmine.clock().tick(500);
       stopWatch.recordLap();
 
-      expect(stopWatch.getLaps()).toEqual([500]);
+      expect(stopWatch._getLapIntervals()).toEqual([500]);
+    });
+
+    it('should handle multiple lap times', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch._getLapIntervals()).toEqual([500, 1000, 2000]);
+    });
+
+    it('should handle multiple laps across start and stop', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      stopWatch.stop();
+      jasmine.clock().tick(5000);
+      stopWatch.start();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch._getLapIntervals()).toEqual([500, 1000, 2000]);
+    });
+  });
+
+  describe('::getLaps', function () {
+
+    it('should handle multiple laps across start and stop', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      stopWatch.stop();
+      jasmine.clock().tick(5000);
+      stopWatch.start();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch.getLaps()).toEqual([[0, 0, 50], [0, 1, 0], [0, 2, 0]]);
     });
   });
 });
