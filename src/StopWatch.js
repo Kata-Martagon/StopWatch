@@ -33,39 +33,14 @@ StopWatch.prototype.getTimeElapsed = function () {
   }
   if (!this.isActive) {
     // Timer not active, so return timeSaved
-    return this.timeConverter.convertTimeToArray(this.timeSaved);
+    return TimeConverter.convertTimeToArray(this.timeSaved);
   }
 
   // Active timer, so calc time elaspsed from last start time to now plus saved time
-  var timeInMillisecond = this.timeConverter._timeElapsedfromStart(this.getCurrentTime()) + this.timeSaved;
+  var timeInMillisecond = this._timeElapsedfromStart(this.getCurrentTime()) + this.timeSaved;
 
-  return this.timeConverter.convertTimeToArray(timeInMillisecond);
+  return TimeConverter.convertTimeToArray(timeInMillisecond);
 };
-
-// StopWatch.prototype.getTimeInHundreths = function (milliseconds) {
-//   return Math.round(milliseconds / 10);
-// };
-
-// StopWatch.prototype.getTimeInMinutes = function (milliseconds) {
-//   var minInMilliseconds = 1000 * 60;
-//   var mins = Math.floor(milliseconds / minInMilliseconds);
-//   var remainder = milliseconds % minInMilliseconds;
-//   return [mins, remainder];
-// };
-
-// StopWatch.prototype.getTimeInSeconds = function (milliseconds) {
-//   var secs = Math.floor(milliseconds / 1000);
-//   var remainderMiliseconds = milliseconds % 1000;
-//   return [secs, remainderMiliseconds];
-// };
-
-
-// StopWatch.prototype.convertTimeToArray = function (milliseconds) {
-//   var mins = this.getTimeInMinutes(milliseconds);
-//   var secs = this.getTimeInSeconds(mins[1]);
-//   var hundredths = this.getTimeInHundreths(secs[1]);
-//   return [mins[0], secs[0], hundredths];
-// };
 
 StopWatch.prototype.recordLap = function () {
   if (!this.isActive) {
@@ -81,31 +56,4 @@ StopWatch.prototype.recordLap = function () {
 
 StopWatch.prototype.getLaps = function () {
   return [this._lapsArray[0][1] - this._lapsArray[0][0]];
-};
-
-var TimeConverter = function () {
-};
-
-TimeConverter.prototype._getTimeInHundreths = function (milliseconds) {
-  return Math.round(milliseconds / 10);
-};
-
-TimeConverter.prototype._getTimeInMinutes = function (milliseconds) {
-  var minInMilliseconds = 1000 * 60;
-  var mins = Math.floor(milliseconds / minInMilliseconds);
-  var remainder = milliseconds % minInMilliseconds;
-  return [mins, remainder];
-};
-
-TimeConverter.prototype._getTimeInSeconds = function (milliseconds) {
-  var secs = Math.floor(milliseconds / 1000);
-  var remainderMiliseconds = milliseconds % 1000;
-  return [secs, remainderMiliseconds];
-};
-
-TimeConverter.prototype.convertTimeToArray = function (milliseconds) {
-  var mins = this._getTimeInMinutes(milliseconds);
-  var secs = this._getTimeInSeconds(mins[1]);
-  var hundredths = this._getTimeInHundreths(secs[1]);
-  return [mins[0], secs[0], hundredths];
 };
