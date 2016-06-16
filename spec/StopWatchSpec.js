@@ -38,12 +38,19 @@ describe('StopWatch', function () {
       stopWatch.start();
       expect(stopWatch.isActive).toBe(true);
     });
+
+    it('should throw an error if isActive status is true', function () {
+      stopWatch.start();
+      var fn = function () { stopWatch.start(); };
+      expect(fn).toThrowError();
+    });
   });
 
   describe('::stop()', function () {
     it('should record the _stopTime on the stopWatch object', function () {
-      stopWatch.stop();
-      expect(Date.now()).toEqual(stopWatch._stopTime);
+      stopWatch.start();
+      var stopTime = stopWatch.stop();
+      expect(Date.now()).toEqual(stopTime);
     });
 
     it('should change isActive status to false', function () {
@@ -51,6 +58,11 @@ describe('StopWatch', function () {
       expect(stopWatch.isActive).toBe(true);
       stopWatch.stop();
       expect(stopWatch.isActive).toBe(false);
+    });
+
+    it('should throw an error if isActive status is false', function () {
+      var fn = function () { stopWatch.stop(); };
+      expect(fn).toThrowError();
     });
   });
 
@@ -158,17 +170,17 @@ describe('StopWatch', function () {
     });
   });
 
-  describe('::getLaps', function () {
-    xit('should have an array of lap times in milliseconds', function () {
+  describe('::_getLapIntervals', function () {
+    it('should have an array of lap times in milliseconds', function () {
       stopWatch.start();
 
       jasmine.clock().tick(500);
       stopWatch.recordLap();
 
-      expect(stopWatch.getLaps()).toEqual([500]);
+      expect(stopWatch._getLapIntervals()).toEqual([500]);
     });
 
-    xit('should handle multiple lap times', function () {
+    it('should handle multiple lap times', function () {
       stopWatch.start();
       jasmine.clock().tick(500);
       stopWatch.recordLap();
@@ -177,7 +189,7 @@ describe('StopWatch', function () {
       jasmine.clock().tick(2000);
       stopWatch.recordLap();
 
-      expect(stopWatch.getLaps()).toEqual([500, 1000, 2000]);
+      expect(stopWatch._getLapIntervals()).toEqual([500, 1000, 2000]);
     });
 
     it('should handle multiple laps across start and stop', function () {
@@ -192,7 +204,25 @@ describe('StopWatch', function () {
       jasmine.clock().tick(2000);
       stopWatch.recordLap();
 
-      expect(stopWatch.getLaps()).toEqual([500, 1000, 2000]);
+      expect(stopWatch._getLapIntervals()).toEqual([500, 1000, 2000]);
+    });
+  });
+
+  describe('::getLaps', function () {
+
+    it('should handle multiple laps across start and stop', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      stopWatch.stop();
+      jasmine.clock().tick(5000);
+      stopWatch.start();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch.getLaps()).toEqual([[0, 0, 50], [0, 1, 0], [0, 2, 0]]);
     });
   });
 });

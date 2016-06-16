@@ -17,9 +17,9 @@ var TimeConverter = {
   },
 
   convertTimeToArray: function (milliseconds) {
-    var mins = this._getTimeInMinutes(milliseconds);
-    var secs = this._getTimeInSeconds(mins[1]);
-    var hundredths = this._getTimeInHundreths(secs[1]);
+    var mins = TimeConverter._getTimeInMinutes(milliseconds);
+    var secs = TimeConverter._getTimeInSeconds(mins[1]);
+    var hundredths = TimeConverter._getTimeInHundreths(secs[1]);
     return [mins[0], secs[0], hundredths];
   }
 };

@@ -16,8 +16,10 @@ StopWatch.prototype.getCurrentTime = function() {
   return Date.now();
 };
 
-// TODO: add check to ensure start doesn't run if ::isActive === true
 StopWatch.prototype.start = function () {
+  // Throw error if  this.isActive === true
+  if (this.isActive) throw new Error('Cannot start an active stopwatch');
+
   // Set ::_startTime to current timestamp
   // Set ::isActive to true
   // Create new lap array for current ::_startTime
@@ -26,18 +28,19 @@ StopWatch.prototype.start = function () {
   this._lapsArray.push([]);
 };
 
-// TODO: add check to ensure stop doesn't run if ::isActive === false
-// TODO: don't think ::_stopTime used outside of this function so can be converted to var
 StopWatch.prototype.stop = function () {
-  // Set ::_stopTime to current timestamp
+  // Throw error if  this.isActive === false
+  if (!this.isActive) throw new Error('Cannot stop an in-active stopwatch');
+
+  // Set stopTime to current timestamp
   // Set ::_isActive to false
   // Add accrued time from last start time until current timestamp to ::timeSaved
-  this._stopTime = this.getCurrentTime();
+  var stopTime = this.getCurrentTime();
   this.isActive = false;
-  this.timeSaved += this._timeElapsedfromStart(this._stopTime);
+  this.timeSaved += this._timeElapsedfromStart(stopTime);
+  return stopTime;
 };
 
-// TODO: throw an error if called when no valid ::_startTime
 StopWatch.prototype._timeElapsedfromStart = function (endTime) {
   // Return number of milliseconds since ::_startTime
   return endTime - this._startTime;
@@ -80,32 +83,13 @@ StopWatch.prototype.recordLap = function () {
   lastSetOfLaps.push(this.getCurrentTime());
 };
 
-// TODO: complete functionality
-StopWatch.prototype.getLaps = function () {
-  // [[0, 500, 1500], [0, 2000]]
-  // [500, 1000], [1000]
-  // [500, 1000, 2000]
-  // var result = [];
-  //
-  //
-  // for(let i=0; i < this._lapsArray.length; i++) {
-  //   let crntLaps = this._lapsArray[i].reduce(lapTimesToIntervals, []);
-  //   result = result.concat(crntLaps);
-  // }
-  //
-  // return result;
+StopWatch.prototype._getLapIntervals = function () {
+  return this._lapsArray.reduce(lapTimeSetsToIntervals, []);
 
-  return this._lapsArray.reduce(function (acc, crntTimestamps) {
+  function lapTimeSetsToIntervals (acc, crntTimestamps) {
     let crntIntervals = crntTimestamps.reduce(lapTimesToIntervals, []);
     return acc.concat(crntIntervals);
-  }, []);
-
-  // this._lapsArray[0].reduce(function (acc, crntTime, idx, arr) {
-  //   if (idx === 0) return acc;
-  //   var interval = crntTime - arr[idx - 1];
-  //   acc.push(interval);
-  //   return acc;
-  // }, []);
+  }
 
   function lapTimesToIntervals (acc, crntTime, idx, arr) {
     if (idx === 0) return acc;
@@ -113,4 +97,8 @@ StopWatch.prototype.getLaps = function () {
     acc.push(interval);
     return acc;
   }
+};
+
+StopWatch.prototype.getLaps = function () {
+  return this._getLapIntervals().map(TimeConverter.convertTimeToArray);
 };
