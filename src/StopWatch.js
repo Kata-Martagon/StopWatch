@@ -52,46 +52,14 @@ StopWatch.prototype.getTimeElapsed = function () {
 
   if (!this.isActive) {
     // Timer not active, so return timeSaved
-    return this.convertTimeToArray(this.timeSaved);
+    return TimeConverter.convertTimeToArray(this.timeSaved);
   }
 
   // Active timer, so calculate time elaspsed from last start time to now plus saved time
   // And return as [mins, secs, hundredths]
   var timeInMillisecond = this._timeElapsedfromStart(this.getCurrentTime()) + this.timeSaved;
 
-  return this.convertTimeToArray(timeInMillisecond);
-};
-
-// TODO: Move to separate time helpers library
-StopWatch.prototype.getTimeInHundreths = function (milliseconds) {
-  // Return time in rounded to nearest hundredth of a second
-  return Math.round(milliseconds / 10);
-};
-
-// TODO: Move to separate time helpers library
-StopWatch.prototype.getTimeInMinutes = function (milliseconds) {
-  // Return [completeMinutes, remaingMilliseconds]
-  var minInMilliseconds = 1000 * 60;
-  var mins = Math.floor(milliseconds / minInMilliseconds);
-  var remainder = milliseconds % minInMilliseconds;
-  return [mins, remainder];
-};
-
-// TODO: Move to separate time helpers library
-StopWatch.prototype.getTimeInSeconds = function (milliseconds) {
-  // Return [completeSeconds, remaingMilliseconds]
-  var secs = Math.floor(milliseconds / 1000);
-  var remainderMiliseconds = milliseconds % 1000;
-  return [secs, remainderMiliseconds];
-};
-
-// TODO: Move to separate time helpers library
-StopWatch.prototype.convertTimeToArray = function (milliseconds) {
-  // Take a time in milliseconds and return [mins, secs, hundredths]
-  var mins = this.getTimeInMinutes(milliseconds);
-  var secs = this.getTimeInSeconds(mins[1]);
-  var hundredths = this.getTimeInHundreths(secs[1]);
-  return [mins[0], secs[0], hundredths];
+  return TimeConverter.convertTimeToArray(timeInMillisecond);
 };
 
 StopWatch.prototype.recordLap = function () {
