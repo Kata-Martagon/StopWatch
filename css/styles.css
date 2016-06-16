@@ -58,7 +58,7 @@ body {
   align-items: stretch;
   width: 100%;
   height: 100%;
-  max-height: 700px;
+  max-height: 800px;
   max-width: 550px;
   min-width: 400px;
   flex-direction: column;
@@ -115,7 +115,7 @@ body {
   height: 85px;
   line-height:1.3em;
   border: 1px solid #666;
-  background-color: inherit;
+  background-color: #EEE;
   color: #333;
   border-radius: 50%;
   text-align:center;
@@ -127,6 +127,12 @@ body {
 
 .stopWatchButton:last-of-type {
   margin-right: 0px;
+}
+
+.laps {
+  width: 100%;
+  height: 40%;
+  background-color: #CCC;
 }
 
 /* Large height screens */
