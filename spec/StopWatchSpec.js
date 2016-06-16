@@ -159,13 +159,40 @@ describe('StopWatch', function () {
   });
 
   describe('::getLaps', function () {
-    it('should have an array of lap times in milliseconds', function () {
+    xit('should have an array of lap times in milliseconds', function () {
       stopWatch.start();
 
       jasmine.clock().tick(500);
       stopWatch.recordLap();
 
       expect(stopWatch.getLaps()).toEqual([500]);
+    });
+
+    xit('should handle multiple lap times', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch.getLaps()).toEqual([500, 1000, 2000]);
+    });
+
+    it('should handle multiple laps across start and stop', function () {
+      stopWatch.start();
+      jasmine.clock().tick(500);
+      stopWatch.recordLap();
+      jasmine.clock().tick(1000);
+      stopWatch.recordLap();
+      stopWatch.stop();
+      jasmine.clock().tick(5000);
+      stopWatch.start();
+      jasmine.clock().tick(2000);
+      stopWatch.recordLap();
+
+      expect(stopWatch.getLaps()).toEqual([500, 1000, 2000]);
     });
   });
 });

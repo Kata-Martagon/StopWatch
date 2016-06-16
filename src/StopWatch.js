@@ -82,5 +82,35 @@ StopWatch.prototype.recordLap = function () {
 
 // TODO: complete functionality
 StopWatch.prototype.getLaps = function () {
-  return [this._lapsArray[0][1] - this._lapsArray[0][0]];
+  // [[0, 500, 1500], [0, 2000]]
+  // [500, 1000], [1000]
+  // [500, 1000, 2000]
+  // var result = [];
+  //
+  //
+  // for(let i=0; i < this._lapsArray.length; i++) {
+  //   let crntLaps = this._lapsArray[i].reduce(lapTimesToIntervals, []);
+  //   result = result.concat(crntLaps);
+  // }
+  //
+  // return result;
+
+  return this._lapsArray.reduce(function (acc, crntTimestamps) {
+    let crntIntervals = crntTimestamps.reduce(lapTimesToIntervals, []);
+    return acc.concat(crntIntervals);
+  }, []);
+
+  // this._lapsArray[0].reduce(function (acc, crntTime, idx, arr) {
+  //   if (idx === 0) return acc;
+  //   var interval = crntTime - arr[idx - 1];
+  //   acc.push(interval);
+  //   return acc;
+  // }, []);
+
+  function lapTimesToIntervals (acc, crntTime, idx, arr) {
+    if (idx === 0) return acc;
+    var interval = crntTime - arr[idx - 1];
+    acc.push(interval);
+    return acc;
+  }
 };
