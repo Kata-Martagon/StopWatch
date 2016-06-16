@@ -25,6 +25,6 @@ function resetButton() {
   updateTime();
 }
 
-// function lapButton () {
-//   var lapTimes = [];
-// }
+function lapButton () {
+  stopWatch.getLaps();
+}
