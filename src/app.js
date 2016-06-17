@@ -1,13 +1,13 @@
-var lastList = [];
+// var lastList = [];
 
 function updateTime() {
-  console.log(stopWatch.getTimeElapsedFromLastLap());
   document.getElementById('Timer').textContent = formatTime(stopWatch.getTimeElapsed());
   document.getElementById('LapTimer').textContent = formatTime(stopWatch.getTimeElapsedFromLastLap());
-  updateLapList(stopWatch.getLaps());
 }
 
 var stopWatch = new StopWatch();
+
+stopWatch.subscribeToLapUpdate(updateLapList);
 
 updateTime();
 
@@ -41,7 +41,7 @@ function reset () {
   Animator.stop();
   updateTime();
   clearLapList();
-  lastList = [];
+  stopWatch.subscribeToLapUpdate(updateLapList);
 }
 
 function lap() {
@@ -56,17 +56,15 @@ function showButton (elementId) {
   document.getElementById(elementId).style.display = 'block';
 }
 
-function formatTime (timeArr) {
-  if (!Array.isArray(timeArr) || timeArr.length < 3) return;
+function formatTime (timeMS) {
+  // if (!Array.isArray(timeArr) || timeArr.length < 3) return;
+  var timeArr = TimeConverter.convertTimeToArray(timeMS);
   return formatNumber(timeArr[0]) + '.' + formatNumber(timeArr[1]) + ':' + formatNumber(timeArr[2]);
 }
 
 function updateLapList (list) {
   var listNode = document.getElementById('LapTimes');
 
-  if (list.length === 0 || list.length <= lastList.length ) return;
-
-  lastList = list;
   clearLapList();
   buildLapList(list);
 }
@@ -80,19 +78,15 @@ function clearLapList () {
 }
 
 function buildLapList (list) {
-  var listNode = document.getElementById('LapTimes');
-
-  list.reverse().forEach(function (timeArr, idx, arr) {
-    creatTableRow(timeArr, idx, arr);
-  });
+  list.reverse().forEach(creatTableRow);
 }
 
-function creatTableRow (timeArr, idx, arr) {
+function creatTableRow (time, idx, arr) {
   var trNode = document.createElement('tr');
   var tdDescription = document.createElement('td');
   tdDescription.textContent = 'Lap ' + (arr.length - idx);
   var tdTime = document.createElement('td');
-  tdTime.textContent = formatTime(timeArr);
+  tdTime.textContent = formatTime(time);
   trNode.appendChild(tdDescription);
   trNode.appendChild(tdTime);
   document.getElementById('LapTimes').appendChild(trNode);
