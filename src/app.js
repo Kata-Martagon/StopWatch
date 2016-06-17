@@ -9,6 +9,22 @@
 
   window.reset = reset;
 
+  // ******** Me
+
+  //attaches start function to  start button
+
+  function attachClickEvent(name, cb) {
+  document.getElementById(name).addEventListener('click', cb);
+}
+
+  attachClickEvent('StartButton', start);
+  attachClickEvent('StopButton', stop);
+  attachClickEvent('ResetButton', reset);
+  attachClickEvent('LapButton', lap);
+
+
+// ****
+
   function reset () {
     clearLapList();
 
@@ -30,27 +46,27 @@
     return num < 10 ? '0' + num : num;
   }
 
-  window.start = function start() {
+  function start() {
     stopWatch.start();
     hideButton('StartButton');
     hideButton('ResetButton');
     showButton('StopButton');
     showButton('LapButton');
     Animator.start();
-  };
+  }
 
-  window.stop = function stop() {
+  function stop() {
     stopWatch.stop();
     hideButton('StopButton');
     hideButton('LapButton');
     showButton('StartButton');
     showButton('ResetButton');
     Animator.stop();
-  };
+  }
 
-  window.lap = function lap() {
+  function lap() {
     stopWatch.recordLap();
-  };
+  }
 
   function hideButton (elementId) {
     document.getElementById(elementId).style.display = 'none';
