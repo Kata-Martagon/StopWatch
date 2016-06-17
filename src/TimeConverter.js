@@ -1,6 +1,6 @@
 var TimeConverter = {
   _getTimeInHundreths: function (milliseconds) {
-    return Math.round(milliseconds / 10);
+    return Math.floor(milliseconds / 10);
   },
 
   _getTimeInMinutes: function (milliseconds) {

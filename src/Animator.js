@@ -7,6 +7,10 @@ var Animator = {
     Animator._callbacks.push(cb);
   },
 
+  clearCallbacks: function () {
+    Animator._callbacks = [];
+  },
+
   start: function () {
     if (Animator._ticking) return;
     Animator._ticking = true;
