@@ -1,7 +1,9 @@
 var lastList = [];
 
 function updateTime() {
+  console.log(stopWatch.getTimeElapsedFromLastLap());
   document.getElementById('Timer').textContent = formatTime(stopWatch.getTimeElapsed());
+  document.getElementById('LapTimer').textContent = formatTime(stopWatch.getTimeElapsedFromLastLap());
   updateLapList(stopWatch.getLaps());
 }
 
