@@ -15,7 +15,7 @@
     Animator.clearCallbacks();
     Animator.addCallback(updateTimers);
 
-    stopWatch = new StopWatch();
+    stopWatch = new window.StopWatch();
     stopWatch.subscribeToLapUpdate(updateLapList);
 
     updateTimers();
@@ -94,46 +94,3 @@
     document.getElementById('LapTimes').appendChild(trNode);
   }
 })();
-// function updateTime() {
-//   document.getElementById('Timer').textContent = formatTime(stopWatch.getTimeElapsed());
-//   document.getElementById('LapTimer').textContent = formatTime(stopWatch.getTimeElapsedFromLastLap());
-// }
-
-// var stopWatch = new StopWatch();
-
-// stopWatch.subscribeToLapUpdate(updateLapList);
-//
-// updateTime();
-//
-// Animator.addCallback(updateTime);
-
-
-// function formatNumber (num) {
-//   return num < 10 ? '0' + num : num;
-// }
-
-// function start() {
-//   stopWatch.start();
-//   hideButton('StartButton');
-//   hideButton('ResetButton');
-//   showButton('StopButton');
-//   showButton('LapButton');
-//   Animator.start();
-// }
-
-// function stop() {
-//   stopWatch.stop();
-//   hideButton('StopButton');
-//   hideButton('LapButton');
-//   showButton('StartButton');
-//   showButton('ResetButton');
-//   Animator.stop();
-// }
-
-// function reset () {
-//   stopWatch = new StopWatch();
-//   Animator.stop();
-//   updateTime();
-//   clearLapList();
-//   stopWatch.subscribeToLapUpdate(updateLapList);
-// }

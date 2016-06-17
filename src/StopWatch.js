@@ -70,7 +70,8 @@ StopWatch.prototype.subscribeToLapUpdate = function (cb) {
 
 // TODO: Add tests
 StopWatch.prototype._publishLapUpdate = function () {
-  this._lapUpdateCallbacks.forEach((cb) => cb(this._lapsArray));
+  var lapsArray = this._lapsArray.slice();
+  this._lapUpdateCallbacks.forEach(function (cb) { return cb(lapsArray); });
 };
 
 StopWatch.prototype._timeElapsedSinceLastInterval = function () {
@@ -82,7 +83,7 @@ StopWatch.prototype._timeIntervalSinceStart = function () {
 };
 
 StopWatch.prototype._totalAccruedLaps = function () {
-  return this._lapsArray.reduce((a, b) => a + b);
+  return this._lapsArray.reduce(function (a, b) { return a + b; });
 };
 
 StopWatch.prototype._totalTimeElapsedToNow = function() {
@@ -102,3 +103,5 @@ StopWatch.prototype.getTimeElapsedFromLastLap = function () {
 
   return this._timeElapsedSinceLastInterval();
 };
+
+window.StopWatch = StopWatch;
