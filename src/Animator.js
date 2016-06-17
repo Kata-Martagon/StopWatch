@@ -14,7 +14,7 @@ var Animator = {
   start: function () {
     if (Animator._ticking) return;
     Animator._ticking = true;
-    window.requestAnimationFrame(Animator._runAnimation);
+    Animator._runAnimation();
   },
 
   stop: function () {

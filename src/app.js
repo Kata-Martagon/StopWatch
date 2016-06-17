@@ -1,29 +1,28 @@
 (function () {
   'use strict';
 
+  // Declare scoped variables
   var MainTimerDiv = document.getElementById('Timer');
   var LapTimerDiv = document.getElementById('LapTimer');
   var stopWatch;
 
-  reset();
+  // Initialise Application
+  init();
 
-  window.reset = reset;
 
-  // ******** Me
+  // Declare functions
+  function init () {
+    reset();
 
-  //attaches start function to  start button
+    attachClickEvent('StartButton', start);
+    attachClickEvent('StopButton', stop);
+    attachClickEvent('ResetButton', reset);
+    attachClickEvent('LapButton', lap);
+  }
 
   function attachClickEvent(name, cb) {
-  document.getElementById(name).addEventListener('click', cb);
-}
-
-  attachClickEvent('StartButton', start);
-  attachClickEvent('StopButton', stop);
-  attachClickEvent('ResetButton', reset);
-  attachClickEvent('LapButton', lap);
-
-
-// ****
+    document.getElementById(name).addEventListener('click', cb);
+  }
 
   function reset () {
     clearLapList();
