@@ -1,44 +1,36 @@
 var StopWatch = function () {
   // StopWatch constructor function
   // Sets default properties:
-  // ::isActive - state of StopWatch
-  // ::timeStored - time in milliseconds accrued (updated in ::stop() method)
+  // ::_isActive - state of StopWatch
+  // ::_timeStored - time in milliseconds accrued (updated in ::stop() method)
   // ::_lapsArray - nested array of lap intervals (nesting required for lap after stop and restart)
   // ::_startTime - timestamp at last call of ::start() method
-  this.isActive = false;
-  this.timeStored = 0;
+  // ::_lapsCallbacks - array to hold callbacks for lap updates
+  this._isActive = false;
+  this._timeStored = 0;
   this._lapsArray = [];
   this._startTime = undefined;
-};
-
-StopWatch.prototype.getCurrentTime = function() {
-  // Return current time as timestamp
-  return Date.now();
+  this._lapUpdateCallbacks = [];
 };
 
 StopWatch.prototype.start = function () {
-  // Throw error if  this.isActive === true
-  if (this.isActive) throw new Error('Cannot start an active stopwatch');
+  // Throw error if  this._isActive === true
+  if (this._isActive) throw new Error('Cannot start an active stopwatch');
 
   // Set ::_startTime to current timestamp
-  // Set ::isActive to true
-  // Create new lap array for current ::_startTime
-  this._startTime = this.getCurrentTime();
-  this.isActive = true;
-  this._lapsArray.push([]);
+  // Set ::_isActive to true
+  this._startTime = Date.now();
+  this._isActive = true;
 };
 
 StopWatch.prototype.stop = function () {
-  // Throw error if  this.isActive === false
-  if (!this.isActive) throw new Error('Cannot stop an in-active stopwatch');
+  // Throw error if this._isActive === false
+  if (!this._isActive) throw new Error('Cannot stop an in-active stopwatch');
 
-  // Set stopTime to current timestamp
-  // Set ::_isActive to false
-  // Add accrued time from last start time until current timestamp to ::timeStored
-  var stopTime = this.getCurrentTime();
-  this.isActive = false;
-  this.timeStored += this._timeElapsedfromStart(stopTime);
-  return stopTime;
+  // Set ::__isActive to false
+  // Add accrued time from last start time until now to ::_timeStored
+  this._isActive = false;
+  this._timeStored += this._timeElapsedfromStart(Date.now());
 };
 
 StopWatch.prototype._timeElapsedfromStart = function (endTime) {
@@ -46,59 +38,67 @@ StopWatch.prototype._timeElapsedfromStart = function (endTime) {
   return endTime - this._startTime;
 };
 
-
 StopWatch.prototype.getTimeElapsed = function () {
-  if (!this._startTime) {
-    // Timer not started, so return timer of zero
-    return [0, 0, 0];
-  }
+  // Timer not started, so return zero ms
+  if (!this._startTime) return 0;
 
-  if (!this.isActive) {
-    // Timer not active, so return timeStored
-    return TimeConverter.convertTimeToArray(this.timeStored);
-  }
+  // Timer not active, so return _timeStored
+  if (!this._isActive) return this._timeStored;
 
-  // Active timer, so calculate time elaspsed from last start time to now plus saved time
-  // And return as [mins, secs, hundredths]
-  var timeInMillisecond = this._timeElapsedfromStart(this.getCurrentTime()) + this.timeStored;
-
-  return TimeConverter.convertTimeToArray(timeInMillisecond);
+  // Active timer, so return total time elapsed until now in ms
+  return this._totalTimeElapsedToNow();
 };
 
+// TODO: update tests
 StopWatch.prototype.recordLap = function () {
-  // If ::isActive === false, cannot record a lap so exit function
-  if (!this.isActive) {
-    return;
-  }
+  // If ::_isActive === false, cannot record a lap so throw error
+  if (!this._isActive) throw new Error('Cannot record lap when inactive');
 
-  // Get lastSetOfLaps (i.e. last array of laps since last ::start() call)
-  var lastSetOfLaps = this._lapsArray[this._lapsArray.length - 1];
+  var nextLapInterval = this._lapsArray.length === 0 ?
+    this._timeIntervalSinceStart() :
+    this._timeElapsedSinceLastInterval();
 
-  // If lastSetOfLaps is an empty array, then add last ::_startTime timestamp
-  if (lastSetOfLaps.length === 0) {
-    lastSetOfLaps.push(this._startTime);
-  }
+  this._lapsArray.push(nextLapInterval);
 
-  // Add current timestamp
-  lastSetOfLaps.push(this.getCurrentTime());
+  this._publishLapUpdate();
 };
 
-StopWatch.prototype._getLapIntervals = function () {
-  return this._lapsArray.reduce(lapTimeSetsToIntervals, []);
-
-  function lapTimeSetsToIntervals (acc, crntTimestamps) {
-    let crntIntervals = crntTimestamps.reduce(lapTimesTolapTimeSets, []);
-    return acc.concat(crntIntervals);
-  }
-
-  function lapTimesTolapTimeSets (acc, crntTime, idx, arr) {
-    if (idx === 0) return acc;
-    var interval = crntTime - arr[idx - 1];
-    acc.push(interval);
-    return acc;
-  }
+// TODO: Add tests
+StopWatch.prototype.subscribeToLapUpdate = function (cb) {
+  this._lapUpdateCallbacks.push(cb);
 };
 
+// TODO: Add tests
+StopWatch.prototype._publishLapUpdate = function () {
+  this._lapUpdateCallbacks.forEach((cb) => cb(this._lapsArray));
+};
+
+StopWatch.prototype._timeElapsedSinceLastInterval = function () {
+  return this._totalTimeElapsedToNow() - this._totalAccruedLaps();
+};
+
+StopWatch.prototype._timeIntervalSinceStart = function () {
+  return Date.now() - this._startTime;
+};
+
+StopWatch.prototype._totalAccruedLaps = function () {
+  return this._lapsArray.reduce((a, b) => a + b);
+};
+
+StopWatch.prototype._totalTimeElapsedToNow = function() {
+  return this._timeElapsedfromStart(Date.now()) + this._timeStored;
+};
+
+// TODO: Add tests
 StopWatch.prototype.getLaps = function () {
-  return this._getLapIntervals().map(TimeConverter.convertTimeToArray);
+  return this._lapsArray;
+};
+
+// TODO: Add tests
+StopWatch.prototype.getTimeElapsedFromLastLap = function () {
+  if (this._lapsArray.length === 0) return this.getTimeElapsed();
+
+  if (!this._isActive) return this._timeStored - this._totalAccruedLaps();
+
+  return this._timeElapsedSinceLastInterval();
 };
