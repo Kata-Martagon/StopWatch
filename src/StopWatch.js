@@ -91,11 +91,6 @@ StopWatch.prototype._totalTimeElapsedToNow = function() {
 };
 
 // TODO: Add tests
-StopWatch.prototype.getLaps = function () {
-  return this._lapsArray;
-};
-
-// TODO: Add tests
 StopWatch.prototype.getTimeElapsedFromLastLap = function () {
   if (this._lapsArray.length === 0) return this.getTimeElapsed();
 
